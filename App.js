@@ -8,6 +8,8 @@ import MealDetailsScreen from './screens/MealDetailsScreen';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import FavouritesScreen from './screens/FavouritesScreen';
 import { Ionicons } from '@expo/vector-icons';
+import FavouritesContextProvider from './store/context/favourites-context';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 const Stack = createNativeStackNavigator()
 const Drawer = createDrawerNavigator()
@@ -41,8 +43,9 @@ function DrawerNavigator(){
 
 export default function App() {
   return (
-    <>
+    <GestureHandlerRootView>
     <StatusBar style="light" />
+    <FavouritesContextProvider>
     <NavigationContainer>
       <Stack.Navigator screenOptions={{
          headerStyle:{backgroundColor:"#3d004c"},
@@ -75,7 +78,8 @@ export default function App() {
         />
       </Stack.Navigator>
     </NavigationContainer>
-    </>
+    </FavouritesContextProvider>
+    </GestureHandlerRootView>
   );
 }
 
