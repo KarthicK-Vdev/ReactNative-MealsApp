@@ -6,15 +6,36 @@ import Subtitle from '../components/MealDetail/Subtitle';
 import List from '../components/MealDetail/List';
 import IconButton from '../components/IconButton';
 import { FavouritesContext } from '../store/context/favourites-context';
+import { useDispatch, useSelector } from 'react-redux';
+
+import { addRecipe, removeRecipe } from '../store/redux/time';
 
 const MealDetailsScreen = ({route, navigation}) => {
     const favouriteMealsCtx = useContext(FavouritesContext)
-
+    
     const mealId = route.params.mealId;
+
+    const cookIds = useSelector((state)=>state.cookMeals.ids)
+
+    const dispatch = useDispatch()
+
+    const cookRecipeIds=cookIds.includes(mealId)
+
 
     const selectedMeal = MEALS.find((meal)=> meal.id === mealId)
 
     const mealIsFavourite= favouriteMealsCtx.ids.includes(mealId)
+
+    function changeCookStatusHandler(){
+      if(cookRecipeIds)
+      {
+        dispatch(removeRecipe({id :mealId}))
+      }
+      else
+      {
+        dispatch(addRecipe({id :mealId}))
+      }
+    }
 
     function changeFavouriteStatusHandler(){
       if(mealIsFavourite)
@@ -30,12 +51,21 @@ const MealDetailsScreen = ({route, navigation}) => {
     useLayoutEffect(()=>{
       navigation.setOptions({
         headerRight:()=>{
-          return <IconButton 
+          return (<View style={styles.iconContainer}><IconButton 
           onPress={changeFavouriteStatusHandler}
           icon={mealIsFavourite ? "star" : "star-outline"}
           color="white"
           />
-      }
+          <View style={styles.iconsSpace}></View>
+          <IconButton 
+          onPress={changeCookStatusHandler}
+          icon={cookRecipeIds ? "timer" :"time-outline"}
+          color="white"
+        />
+        </View>
+        )
+      },
+      
     })
 },[navigation, changeFavouriteStatusHandler])
   return (
@@ -87,5 +117,12 @@ const styles = StyleSheet.create({
   },
   listContainer:{
     width:"80%"
+  },
+  iconContainer:{
+    flexDirection:"row",
+    marginRight:10
+  },
+  iconsSpace:{
+    width:10,
   }
 })
